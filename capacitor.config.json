@@ -1,0 +1,6 @@
+{
+  "appId": "com.redwatch.app",
+  "appName": "RedWatch",
+  "webDir": "www",
+  "plugins": { "CapacitorHttp": { "enabled": true } }
+}
