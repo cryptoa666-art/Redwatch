@@ -4,49 +4,59 @@
 <title>RedWatch</title>
 <style>
 :root{--bg:#111418;--cd:#1b2027;--tx:#e8eaed;--mu:#9aa3af;--bd:#2d343d;--rd:#d93025;--ac:#4c8dff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px Tahoma,sans-serif;padding:env(safe-area-inset-top,24px) 0 70px}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:15px Tahoma,sans-serif;padding:env(safe-area-inset-top,24px) 0 100px}
 main{padding:12px}.c{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:12px;margin-bottom:10px}
 .ev{border-right:4px solid var(--rd)}.r{display:flex;gap:8px;flex-wrap:wrap}.r>*{flex:1;min-width:110px}
-input,select,textarea,button{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
-textarea{min-height:70px}button.p{background:var(--ac);border:0;font-weight:700}
+input,button{width:100%;padding:10px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+button.p{background:var(--ac);border:0;font-weight:700}
 label{font-size:12px;color:var(--mu);display:block;margin:6px 0 2px}.s{font-size:12px;color:var(--mu)}
 .t{font-size:13px;direction:ltr;text-align:right;color:var(--mu)}.t b{color:var(--tx)}
+.j{font-size:13px;color:#8ab4f8;margin-top:2px}
 .g{display:inline-block;font-size:11px;padding:2px 7px;border-radius:99px;background:var(--rd);margin-left:6px}
 .w{color:#ffb74d}.d{font-weight:700;color:var(--mu);font-size:13px;margin:12px 2px 6px}
-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:var(--cd);border-top:1px solid var(--bd)}
-nav button{border:0;border-radius:0;background:none;color:var(--mu);padding:15px 2px}nav .on{color:var(--ac);font-weight:700}
+nav{position:fixed;bottom:calc(10px + env(safe-area-inset-bottom,0px));left:12px;right:12px;display:flex;gap:6px;padding:6px;background:var(--cd);border:1px solid var(--bd);border-radius:20px;box-shadow:0 6px 24px rgba(0,0,0,.5)}
+nav button{flex:1;border:0;border-radius:14px;background:transparent;color:var(--mu);padding:13px 4px;font-size:14px}
+nav button.on{background:linear-gradient(135deg,#4c8dff,#7a5cff);color:#fff;font-weight:700;box-shadow:0 3px 12px rgba(76,141,255,.45)}
+.sw{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tg{width:54px;height:30px;padding:0;border:0;border-radius:99px;background:#444c57;position:relative;flex:none}
+.tg i{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.2s}
+.tg.on{background:#34a853}.tg.on i{left:27px}
 </style></head><body><main id="a"></main>
-<nav><button data-t="ff">ForexFactory</button><button data-t="ax">ArroxFund</button><button data-t="an">تحلیل</button><button data-t="st">تنظیمات</button></nav>
+<nav><button data-t="ff">ForexFactory</button><button data-t="ax">ArroxFund</button><button data-t="st">تنظیمات</button></nav>
 <script>
-var IR=3.5*36e5,P=(window.Capacitor&&Capacitor.Plugins)||{},ev=[],nt={},cfg={al:15,from:'',to:'',tab:'ff',sel:'',upd:''};
+var IR=3.5*36e5,P=(window.Capacitor&&Capacitor.Plugins)||{},ev=[],cfg={al:15,on:true,from:'',to:'',tab:'ff',upd:''};
 var URLS=['https://nfs.faireconomy.media/ff_calendar_thisweek.json','https://nfs.faireconomy.media/ff_calendar_nextweek.json'];
-function ld(){try{ev=JSON.parse(localStorage.ev||'[]');nt=JSON.parse(localStorage.nt||'{}');Object.assign(cfg,JSON.parse(localStorage.cfg||'{}'))}catch(e){}}
-function sv(){try{localStorage.ev=JSON.stringify(ev);localStorage.nt=JSON.stringify(nt);localStorage.cfg=JSON.stringify(cfg)}catch(e){}}
+var MN=['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند'],WD=['یکشنبه','دوشنبه','سه‌شنبه','چهارشنبه','پنجشنبه','جمعه','شنبه'];
+function ld(){try{ev=JSON.parse(localStorage.ev||'[]');Object.assign(cfg,JSON.parse(localStorage.cfg||'{}'))}catch(e){}if(cfg.tab!='ff'&&cfg.tab!='ax'&&cfg.tab!='st')cfg.tab='ff'}
+function sv(){try{localStorage.ev=JSON.stringify(ev);localStorage.cfg=JSON.stringify(cfg)}catch(e){}}
 function p2(n){return(n<10?'0':'')+n}
+function pd(s){return String(s).replace(/\d/g,function(d){return'۰۱۲۳۴۵۶۷۸۹'[d]})}
 function fmt(ms,o){var d=new Date(ms+o);return d.getUTCFullYear()+'-'+p2(d.getUTCMonth()+1)+'-'+p2(d.getUTCDate())+' '+p2(d.getUTCHours())+':'+p2(d.getUTCMinutes())}
+function g2j(gy,gm,gd){var g=[0,31,59,90,120,151,181,212,243,273,304,334],y2=gm>2?gy+1:gy,days=355666+365*gy+Math.floor((y2+3)/4)-Math.floor((y2+99)/100)+Math.floor((y2+399)/400)+gd+g[gm-1],jy=-1595+33*Math.floor(days/12053);days%=12053;jy+=4*Math.floor(days/1461);days%=1461;if(days>365){jy+=Math.floor((days-1)/365);days=(days-1)%365}var jm=days<186?1+Math.floor(days/31):7+Math.floor((days-186)/30),jd=1+(days<186?days%31:(days-186)%30);return[jy,jm,jd]}
+function jOf(ms){var d=new Date(ms+IR),j=g2j(d.getUTCFullYear(),d.getUTCMonth()+1,d.getUTCDate());return pd(WD[d.getUTCDay()]===undefined?'':'')+WD[d.getUTCDay()]+' '+pd(j[2])+' '+MN[j[1]-1]+' '+pd(j[0])}
+function jStr(s){if(!s)return'';var a=s.split('-'),j=g2j(+a[0],+a[1],+a[2]);return pd(j[2])+' '+MN[j[1]-1]+' '+pd(j[0])}
 function esc(s){return String(s||'').replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
-function key(e){return e.c+'|'+e.t+'|'+e.ms}
-async function get(u){try{if(P.CapacitorHttp){var r=await P.CapacitorHttp.get({url:u});return typeof r.data==='string'?JSON.parse(r.data):r.data}return await(await fetch(u)).json()}catch(e){return null}}
-async function refresh(){cfg.upd='در حال دریافت...';r();var all=[],ok=0;for(var i=0;i<URLS.length;i++){var j=await get(URLS[i]);if(Array.isArray(j)){ok++;j.forEach(function(x){var ms=Date.parse(x.date);if(x.impact==='High'&&!isNaN(ms))all.push({t:x.title,c:x.country,ms:ms,fc:x.forecast||'',pv:x.previous||''})})}}
-if(ok){ev=all.sort(function(a,b){return a.ms-b.ms});cfg.upd='به‌روز شد: '+fmt(Date.now(),IR)+' (ایران)'}else cfg.upd='دریافت ناموفق؛ اینترنت یا محدودیت سرور (۴۲۹). دوباره بعد از چند دقیقه امتحان کن.';sv();r();sched()}
-async function sched(){var L=P.LocalNotifications;if(!L)return;try{var q=await L.getPending();if(q.notifications.length)await L.cancel({notifications:q.notifications});var n=Date.now(),a=[];ev.forEach(function(e,i){var at=e.ms-cfg.al*6e4;if(at>n)a.push({id:i+1,title:'🔴 '+e.c+' '+e.t,body:(cfg.al>0?cfg.al+' دقیقه دیگر · ':'')+'ایران '+fmt(e.ms,IR).slice(11)+' | UTC '+fmt(e.ms,0).slice(11),schedule:{at:new Date(at),allowWhileIdle:true}})});if(a.length)await L.schedule({notifications:a})}catch(x){}}
+var UA='Mozilla/5.0 (Linux; Android 13; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Mobile Safari/537.36';
+function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+async function get(u){try{if(P.CapacitorHttp){var r=await P.CapacitorHttp.get({url:u,headers:{'User-Agent':UA,'Accept':'application/json'},connectTimeout:15000,readTimeout:15000});var d=r.data;if(typeof d==='string'){try{d=JSON.parse(d)}catch(e){d=null}}return{s:r.status,d:d}}var x=await fetch(u);return{s:x.status,d:await x.json()}}catch(e){return{s:0,d:null}}}
+async function refresh(manual){var n0=Date.now();if(!manual&&cfg.lastOk&&n0-cfg.lastOk<36e5&&ev.length)return;cfg.upd='در حال دریافت...';r();var map={},ok=0,codes=[];ev.forEach(function(e){if(e.ms>n0-12*864e5)map[e.c+'|'+e.t+'|'+e.ms]=e});
+for(var i=0;i<URLS.length;i++){if(i)await sleep(1500);var q=await get(URLS[i]);if(Array.isArray(q.d)){ok++;q.d.forEach(function(x){var ms=Date.parse(x.date);if(x.impact==='High'&&!isNaN(ms))map[x.country+'|'+x.title+'|'+ms]={t:x.title,c:x.country,ms:ms,fc:x.forecast||'',pv:x.previous||''}})}else codes.push(q.s)}
+if(ok){ev=Object.keys(map).map(function(k){return map[k]}).sort(function(a,b){return a.ms-b.ms});cfg.lastOk=Date.now();cfg.upd='به‌روز شد: '+fmt(Date.now(),IR)+' (ایران)'+(ok<URLS.length?' — فقط یکی از دو هفته دریافت شد (کد '+codes.join(',')+')':'')}
+else cfg.upd=codes.indexOf(429)>=0?'سرور فارکس فکتوری محدودیت زده (۴۲۹). VPN را خاموش کن و ۱۰ تا ۱۵ دقیقه بعد دوباره «به‌روزرسانی» را بزن.':'دریافت ناموفق (کد '+codes.join(',')+'). اینترنت یا VPN را چک کن و دوباره امتحان کن.';sv();r();sched()}
+async function sched(){var L=P.LocalNotifications;if(!L)return;try{var q=await L.getPending();if(q.notifications.length)await L.cancel({notifications:q.notifications});if(cfg.on===false)return;var n=Date.now(),a=[];ev.forEach(function(e,i){var at=e.ms-cfg.al*6e4;if(at>n)a.push({id:i+1,title:'🔴 '+e.c+' '+e.t,body:(cfg.al>0?cfg.al+' دقیقه دیگر · ':'')+'ایران '+fmt(e.ms,IR).slice(11)+' | UTC '+fmt(e.ms,0).slice(11),schedule:{at:new Date(at),allowWhileIdle:true}})});if(a.length)await L.schedule({notifications:a})}catch(x){}}
 async function perm(){var L=P.LocalNotifications;if(!L){alert('فقط داخل APK کار می‌کند');return}try{await L.requestPermissions();try{await L.changeExactNotificationSetting()}catch(e){}alert('انجام شد');sched()}catch(e){alert('خطا در دریافت مجوز')}}
+function tog(){cfg.on=cfg.on===false;sv();sched();r()}
 function rng(){var f=cfg.from?Date.parse(cfg.from+'T00:00:00Z'):-1e18,t=cfg.to?Date.parse(cfg.to+'T23:59:00Z'):1e18;return ev.filter(function(e){return e.ms>=f&&e.ms<=t})}
 function wk(){var n=new Date(),d=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate());var s=d-new Date(d).getUTCDay()*864e5;cfg.from=fmt(s,0).slice(0,10);cfg.to=fmt(s+6*864e5,0).slice(0,10);sv();r()}
-function card(e,ax){var h='<div class="c ev"><span class="g">'+esc(e.c)+'</span><b>'+esc(e.t)+'</b><div class="s">'+(e.fc?'پیش‌بینی '+esc(e.fc):'')+(e.pv?' · قبلی '+esc(e.pv):'')+'</div><div class="t"><b>UTC</b> '+fmt(e.ms,0)+'</div><div class="t"><b>IR</b> '+fmt(e.ms,IR)+'</div>';
+function card(e,ax){var h='<div class="c ev"><span class="g">'+esc(e.c)+'</span><b>'+esc(e.t)+'</b><div class="s">'+(e.fc?'پیش‌بینی '+esc(e.fc):'')+(e.pv?' · قبلی '+esc(e.pv):'')+'</div><div class="t"><b>UTC</b> '+fmt(e.ms,0)+'</div><div class="t"><b>IR</b> '+fmt(e.ms,IR)+'</div><div class="j">📅 '+jOf(e.ms)+' · ساعت '+pd(fmt(e.ms,IR).slice(11))+'</div>';
 if(ax)h+='<div class="w" style="margin-top:6px">⛔ ممنوعه (±۵ دقیقه): '+fmt(e.ms-3e5,IR).slice(11)+' تا '+fmt(e.ms+3e5,IR).slice(11)+' ایران<div class="t">UTC '+fmt(e.ms-3e5,0).slice(11)+' → '+fmt(e.ms+3e5,0).slice(11)+'</div></div>';
-return h+'<button style="margin-top:8px" onclick="cfg.sel=\''+key(e).replace(/'/g,"\\'")+'\';cfg.tab=\'an\';sv();r()">تحلیل</button></div>'}
-function list(ax){var l=rng(),h='<div class="c"><div class="r"><div><label>از تاریخ</label><input type="date" value="'+cfg.from+'" onchange="cfg.from=this.value;sv();r()"></div><div><label>تا تاریخ</label><input type="date" value="'+cfg.to+'" onchange="cfg.to=this.value;sv();r()"></div></div><div class="r" style="margin-top:8px"><button onclick="wk()">این هفته</button><button class="p" onclick="refresh()">به‌روزرسانی</button></div><div class="s" style="margin-top:6px">'+esc(cfg.upd)+'</div></div>';
-if(ax)h+='<div class="c w s">قانون آروکس‌فاند: باز/بستن معامله از ۵ دقیقه قبل تا ۵ دقیقه بعد از خبر قرمز ممنوع است. خود سایت تقویم جدا ندارد؛ همین اخبار قرمز با پنجرهٔ ممنوعه نمایش داده می‌شود.</div>';
+return h+'</div>'}
+function list(ax){var l=rng(),h='<div class="c"><div class="r"><div><label>از تاریخ</label><input type="date" value="'+cfg.from+'" onchange="cfg.from=this.value;sv();r()"><div class="j">'+jStr(cfg.from)+'</div></div><div><label>تا تاریخ</label><input type="date" value="'+cfg.to+'" onchange="cfg.to=this.value;sv();r()"><div class="j">'+jStr(cfg.to)+'</div></div></div><div class="r" style="margin-top:8px"><button onclick="wk()">این هفته</button><button class="p" onclick="refresh(true)">به‌روزرسانی</button></div><div class="s" style="margin-top:6px">'+esc(cfg.upd)+'</div></div>';
+if(ax)h+='<div class="c w s">قانون آروکس‌فاند: باز/بستن معامله از ۵ دقیقه قبل تا ۵ دقیقه بعد از خبر قرمز ممنوع است.</div>';
 if(!l.length)return h+'<div class="c s">خبری در این بازه نیست. فید فقط «این هفته» و «هفته بعد» را دارد.</div>';
-var last='';l.forEach(function(e){var d=fmt(e.ms,IR).slice(0,10);if(d!==last){h+='<div class="d">'+d+' (ایران)</div>';last=d}h+=card(e,ax)});return h}
-function an(){var o=ev.slice().sort(function(a,b){return a.ms-b.ms}),e=ev.filter(function(x){return key(x)===cfg.sel})[0],n=nt[cfg.sel]||{};
-var h='<div class="c"><label>انتخاب خبر</label><select onchange="cfg.sel=this.value;sv();r()"><option value="">—</option>'+o.map(function(x){return'<option value="'+esc(key(x))+'"'+(key(x)===cfg.sel?' selected':'')+'>'+fmt(x.ms,IR)+' · '+esc(x.c)+' '+esc(x.t)+'</option>'}).join('')+'</select></div>';
-if(!e)return h+'<div class="c s">یک خبر انتخاب کن.</div>';
-function f(k,l){return'<label>'+l+'</label><textarea onchange="nt[cfg.sel]=nt[cfg.sel]||{};nt[cfg.sel][\''+k+'\']=this.value;sv()">'+esc(n[k])+'</textarea>'}
-return h+'<div class="c"><b>'+esc(e.c)+' '+esc(e.t)+'</b><div class="t"><b>UTC</b> '+fmt(e.ms,0)+' · <b>IR</b> '+fmt(e.ms,IR)+'</div><div class="s">پیش‌بینی '+esc(e.fc)+' · قبلی '+esc(e.pv)+'</div>'+f('act','مقدار واقعی')+f('plan','برنامه قبل از خبر')+f('note','نتیجه و درس بعد از خبر')+'</div>'}
-function st(){return'<div class="c"><label>هشدار: چند دقیقه قبل از خبر</label><input type="number" min="0" value="'+cfg.al+'" onchange="cfg.al=+this.value||0;sv();sched()"><div class="r" style="margin-top:10px"><button class="p" onclick="perm()">فعال‌سازی اعلان و آلارم دقیق</button></div><p class="s">هشدارها روی همهٔ اخبار قرمز آینده زمان‌بندی می‌شوند و با بستن اپ هم کار می‌کنند. ساعت ایران = UTC+3:30. منبع داده: فید تقویم فارکس فکتوری.</p></div>'}
-function r(){var t=cfg.tab;document.getElementById('a').innerHTML=t=='ff'?list(0):t=='ax'?list(1):t=='an'?an():st();document.querySelectorAll('nav button').forEach(function(b){b.className=b.dataset.t==t?'on':''})}
+var last='';l.forEach(function(e){var d=fmt(e.ms,IR).slice(0,10);if(d!==last){h+='<div class="d">'+jOf(e.ms)+' · '+d+' (ایران)</div>';last=d}h+=card(e,ax)});return h}
+function st(){var on=cfg.on!==false;return'<div class="c"><div class="sw"><div><b>آلارم اخبار</b><div class="s">'+(on?'روشن: قبل از هر خبر قرمز هشدار می‌دهد':'خاموش: هیچ هشداری نمی‌دهد')+'</div></div><button class="tg'+(on?' on':'')+'" onclick="tog()"><i></i></button></div></div><div class="c"><label>هشدار: چند دقیقه قبل از خبر</label><input type="number" min="0" value="'+cfg.al+'" onchange="cfg.al=+this.value||0;sv();sched()"><div style="margin-top:10px"><button class="p" onclick="perm()">فعال‌سازی اعلان و آلارم دقیق</button></div><p class="s">ساعت ایران = UTC+3:30. منبع داده: فید تقویم فارکس فکتوری.</p></div>'}
+function r(){var t=cfg.tab;document.getElementById('a').innerHTML=t=='ff'?list(0):t=='ax'?list(1):st();document.querySelectorAll('nav button').forEach(function(b){b.className=b.dataset.t==t?'on':''})}
 document.querySelectorAll('nav button').forEach(function(b){b.onclick=function(){cfg.tab=b.dataset.t;sv();r()}});
-ld();if(!cfg.from&&!cfg.to)wk();r();refresh();
+ld();if(!cfg.from&&!cfg.to)wk();r();refresh(false);
 </script></body></html>
