@@ -17,6 +17,11 @@ jobs:
       - name: Add alarm permissions
         run: |
           sed -i 's#</manifest>#<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/><uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/><uses-permission android:name="android.permission.USE_EXACT_ALARM"/></manifest>#' android/app/src/main/AndroidManifest.xml
+      - name: Custom icon
+        run: |
+          mkdir -p android/app/src/main/res/drawable
+          cp icon/rw_icon.xml android/app/src/main/res/drawable/rw_icon.xml
+          sed -i 's#@mipmap/ic_launcher_round#@drawable/rw_icon#; s#@mipmap/ic_launcher"#@drawable/rw_icon"#' android/app/src/main/AndroidManifest.xml
       - run: npx cap sync android
       - run: cd android && chmod +x gradlew && ./gradlew assembleDebug
       - uses: actions/upload-artifact@v4
